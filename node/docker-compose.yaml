@@ -1,0 +1,50 @@
+version: '3'
+services:
+    alphine:
+        hostname: Node-Alphine
+        build:
+          context: .
+          dockerfile: sailsjs.dockerfile
+        container_name: Node-Alphine
+        tty: true
+        stdin_open: true
+        privileged: true
+        restart: unless-stopped
+        volumes:
+        - /Users/lezturay/Desktop/etap/nodeweb:/node
+        ports:
+            - '1338:1338'
+            - '1337:1337' 
+            - '1336:1336' 
+        depends_on: 
+            - mongodb
+            - mysqldb
+        environment:
+          MONGO_URI: mongodb://root:secret@mongodb:27017/node
+
+    mongodb:
+        image: mongo:latest
+        hostname : mongodb
+        container_name: mongodb
+        restart: always
+        ports:
+          - "27017:27017"
+        # environment:
+          # MONGO_INITDB_ROOT_USERNAME: root
+          # MONGO_INITDB_ROOT_PASSWORD: bawalsabihin
+        volumes:
+          - /Users/lezturay/Desktop/etap/devdock/node/db:/data/db
+    mysqldb :
+        hostname : mysqldb
+        container_name : mysqldb
+        image: mariadb:10.5
+        restart: always
+        tty: true
+        stdin_open: true
+        privileged: true
+        environment: 
+            MYSQL_ROOT_PASSWORD: secret
+        volumes:
+        - /Users/lezturay/Desktop/etap/devdock/node/mysqldb:/var/lib/mysql
+        ports:
+        - 3308:3306
